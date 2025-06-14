@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 066317b62ecb5614084b89a360680f18
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - rainSound: {fileID: 8300000, guid: 343414efde6e09242bad5b4e84500ed2, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
