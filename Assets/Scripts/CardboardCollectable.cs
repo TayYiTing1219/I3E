@@ -2,15 +2,14 @@ using UnityEngine;
 
 
 [RequireComponent(typeof(Collider), typeof(MeshRenderer))]
-public class CoinBehaviour : MonoBehaviour
+public class CardboardCollectable : MonoBehaviour
 {
     // Original highlight system
     private MeshRenderer meshRenderer;
     [SerializeField] private Material highlightMaterial;
     private Material originalMaterial;
-    
-    // Coin value and collection
-    public int coinValue = 100;
+
+    // object collection
     private bool isCollected = false;
 
     [Header("Sound Effects")]
@@ -47,19 +46,6 @@ public class CoinBehaviour : MonoBehaviour
         if (isCollected) return;
         isCollected = true;
 
-        // Original score modification
-        player.ModifyScore(coinValue);
-
-        // New collectable tracking
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.AddCollectable();
-        }
-        else
-        {
-            Debug.LogWarning("GameManager instance not found!");
-        }
-
         if (collectSound != null)
         {
             AudioSource.PlayClipAtPoint(collectSound, transform.position, soundVolume);
@@ -73,15 +59,9 @@ public class CoinBehaviour : MonoBehaviour
         meshRenderer.enabled = false;
         Destroy(gameObject, collectSound != null ? collectSound.length : 0.1f); // Small delay for effects to play
     }
-
-    // Auto-collection when player touches
     private void OnTriggerEnter(Collider other)
     {
         if (isCollected) return;
-
-        if (other.TryGetComponent<PlayerBehaviour>(out var player))
-        {
-            Collect(player);
-        }
     }
+
 }

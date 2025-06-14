@@ -10,6 +10,9 @@ TagManager:
   - Door
   - Bullet
   - Button
+  - Fire
+  - Cardboard
+  - Umbrella
   layers:
   - Default
   - TransparentFX

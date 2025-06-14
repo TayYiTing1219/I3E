@@ -10,6 +10,7 @@ public class PlayerBehaviour : MonoBehaviour
     bool canInteract = false; // Flag to check if the player can interact with an object
     DoorBehaviour currentDoor; // Declare a variable to hold the current door object
     CoinBehaviour currentCoin; // Declare a variable to hold the current coin object
+    CardboardCollectable currentCardboard; // Declare a variable to hold the current collectable object
 
 
     [SerializeField]
@@ -87,11 +88,30 @@ public class PlayerBehaviour : MonoBehaviour
                 currentCoin = hitInfo.collider.GetComponent<CoinBehaviour>();
                 currentCoin.Highlight(); // Highlight the coin when in range
             }
+
+            else if (hitInfo.collider.gameObject.CompareTag("Cardboard"))
+            {
+                if (currentCardboard != null)
+                {
+                    currentCardboard.Unhighlight(); // Unhighlight the previous collectable
+                }
+                // set the canInteract flag to true
+                // and assign the currentCardboard variable to the CardboardCollectable component of the hit object
+                canInteract = true;
+                currentCardboard = hitInfo.collider.GetComponent<CardboardCollectable>();
+                currentCardboard.Highlight(); // Highlight the collectable when in range
+            }
+
         }
         else if (currentCoin != null)
         {
             currentCoin.Unhighlight(); // Unhighlight the coin if not in range
             currentCoin = null; // Reset currentCoin if raycast does not hit a collectable
+        }
+        else if (currentCardboard != null)
+        {
+            currentCardboard.Unhighlight(); // Unhighlight the collectable if not in range
+            currentCardboard = null; // Reset currentCardboard if raycast does not hit a collectable
         }
 
         if (canInteract && Input.GetKeyDown(KeyCode.E))
@@ -106,6 +126,13 @@ public class PlayerBehaviour : MonoBehaviour
                 Debug.Log("Interacting with coin");
                 currentCoin.Collect(this);
                 currentCoin = null;
+                canInteract = false;
+            }
+            else if (currentCardboard != null)
+            {
+                Debug.Log("Interacting with cardboard");
+                currentCardboard.Collect(this);
+                currentCardboard = null;
                 canInteract = false;
             }
         }
@@ -125,6 +152,12 @@ public class PlayerBehaviour : MonoBehaviour
             canInteract = true;
             Debug.Log("Player can collect: " + other.gameObject.name);
         }
+        else if (other.CompareTag("Cardboard"))
+        {
+            currentCardboard = other.GetComponent<CardboardCollectable>();
+            canInteract = true;
+            Debug.Log("Player can collect: " + other.gameObject.name);
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -137,6 +170,11 @@ public class PlayerBehaviour : MonoBehaviour
         else if (other.CompareTag("Collectable"))
         {
             currentCoin = null;
+            canInteract = false;
+        }
+        else if (other.CompareTag("Cardboard"))
+        {
+            currentCardboard = null;
             canInteract = false;
         }
     }

@@ -42711,6 +42711,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Umbrella
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 3118d6cbec637d847ba2475eff781324, type: 3}
+      propertyPath: m_TagString
+      value: Umbrella
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 3118d6cbec637d847ba2475eff781324, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.2150311
@@ -44748,6 +44752,21 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5404044417708316565, guid: e45be126a51afea479542063f06866f0, type: 3}
+--- !u!114 &1263009507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263009502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db131cd53565e7944b6ffda18609e9de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightMaterial: {fileID: 2100000, guid: 83d3dc89de9844b41baafddee53a9c09, type: 2}
+  collectSound: {fileID: 8300000, guid: 3c392e6befcab436bae9c198f4ea422c, type: 3}
+  soundVolume: 5
 --- !u!4 &1265714961 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6285978078368029991, guid: 1269383de2ad34b489662104b6033ca8, type: 3}
@@ -47465,6 +47484,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flattened Box
       objectReference: {fileID: 0}
+    - target: {fileID: 6208189683626728464, guid: 0a475778dd8805c44a9829ab25bace3a, type: 3}
+      propertyPath: m_TagString
+      value: Cardboard
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -47472,6 +47495,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6208189683626728464, guid: 0a475778dd8805c44a9829ab25bace3a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1263009506}
+    - targetCorrespondingSourceObject: {fileID: 6208189683626728464, guid: 0a475778dd8805c44a9829ab25bace3a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1263009507}
   m_SourcePrefab: {fileID: 100100000, guid: 0a475778dd8805c44a9829ab25bace3a, type: 3}
 --- !u!1 &1817266997 stripped
 GameObject:
