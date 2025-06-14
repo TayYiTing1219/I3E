@@ -9,6 +9,7 @@ TagManager:
   - HealingArea
   - Door
   - Bullet
+  - Button
   layers:
   - Default
   - TransparentFX
