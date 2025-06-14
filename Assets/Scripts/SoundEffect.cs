@@ -8,13 +8,17 @@ public class RainSoundController : MonoBehaviour
     [Range(0f, 1f)] public float maxVolume = 0.7f;
     [SerializeField] private float minDistance = 5f;
     [SerializeField] private float maxDistance = 20f;
-    
+
+    [Header("Playback Settings")]
+    [SerializeField] [Range(0.5f, 3f)] private float playbackSpeed = 1.2f; // >1 = faster
+
     private AudioSource audioSource;
     private Transform playerTransform;
 
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        audioSource.pitch = playbackSpeed;
         audioSource.clip = rainSound;
         audioSource.spatialBlend = 1f; // Full 3D sound
         audioSource.loop = true;
