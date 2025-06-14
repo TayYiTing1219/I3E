@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 [RequireComponent(typeof(Collider), typeof(MeshRenderer))]
 public class CoinBehaviour : MonoBehaviour
 {
@@ -12,10 +13,10 @@ public class CoinBehaviour : MonoBehaviour
     public int coinValue = 100;
     private bool isCollected = false;
 
-    // Audio/Visual effects
-    [Header("Effects")]
-    [SerializeField] private ParticleSystem collectParticles;
+    [Header("Sound Effects")]
+    // [SerializeField] private ParticleSystem collectParticles;
     [SerializeField] private AudioClip collectSound;
+    [SerializeField] private float soundVolume = 1f;
 
     void Start()
     {
@@ -60,22 +61,26 @@ public class CoinBehaviour : MonoBehaviour
             Debug.LogWarning("GameManager instance not found!");
         }
 
-        // Visual/Audio effects
-        if (collectParticles != null)
-        {
-            ParticleSystem particles = Instantiate(collectParticles, transform.position, Quaternion.identity);
-            particles.Play();
-            Destroy(particles.gameObject, particles.main.duration);
-        }
+        // // Visual/Audio effects
+        // if (collectParticles != null)
+        // {
+        //     ParticleSystem particles = Instantiate(collectParticles, transform.position, Quaternion.identity);
+        //     particles.Play();
+        //     Destroy(particles.gameObject, particles.main.duration);
+        // }
 
         if (collectSound != null)
         {
-            AudioSource.PlayClipAtPoint(collectSound, transform.position);
+            AudioSource.PlayClipAtPoint(collectSound, transform.position, soundVolume);
+        }
+        else
+        {
+            Debug.LogWarning("Collect sound not assigned!");
         }
 
         // Disable before destruction to prevent double-collection
         meshRenderer.enabled = false;
-        Destroy(gameObject, 0.1f); // Small delay for effects to play
+        Destroy(gameObject, collectSound != null ? collectSound.length : 0.1f); // Small delay for effects to play
     }
 
     // Auto-collection when player touches

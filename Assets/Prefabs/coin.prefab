@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4033141059398716799}
   - component: {fileID: 8914762355062574741}
   - component: {fileID: 6147213178874662194}
-  - component: {fileID: 6509215692011388886}
+  - component: {fileID: 7713025641307627262}
   m_Layer: 0
   m_Name: coin
   m_TagString: Collectable
@@ -109,7 +109,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &6509215692011388886
+--- !u!114 &7713025641307627262
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,6 +122,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightMaterial: {fileID: 2100000, guid: e5657b4d5d814e5499c77889aa2de5e3, type: 2}
-  coinValue: 10
-  collectParticles: {fileID: 0}
-  collectSound: {fileID: 0}
+  coinValue: 100
+  collectSound: {fileID: 8300000, guid: 1916972b0254443a2ac996968e38335c, type: 3}
+  soundVolume: 100

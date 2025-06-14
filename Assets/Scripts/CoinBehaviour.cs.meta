@@ -6,7 +6,7 @@ MonoImporter:
   defaultReferences:
   - highlightMaterial: {fileID: 2100000, guid: e5657b4d5d814e5499c77889aa2de5e3, type: 2}
   - collectParticles: {instanceID: 0}
-  - collectSound: {instanceID: 0}
+  - collectSound: {fileID: 8300000, guid: 1916972b0254443a2ac996968e38335c, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
