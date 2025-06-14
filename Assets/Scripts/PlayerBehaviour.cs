@@ -11,6 +11,7 @@ public class PlayerBehaviour : MonoBehaviour
     DoorBehaviour currentDoor; // Declare a variable to hold the current door object
     CoinBehaviour currentCoin; // Declare a variable to hold the current coin object
     CardboardCollectable currentCardboard; // Declare a variable to hold the current collectable object
+    UmbrellaCollect currentUmbrella; // Declare a variable to hold the current umbrella object
 
 
     [SerializeField]
@@ -102,6 +103,19 @@ public class PlayerBehaviour : MonoBehaviour
                 currentCardboard.Highlight(); // Highlight the collectable when in range
             }
 
+            else if (hitInfo.collider.gameObject.CompareTag("Umbrella"))
+            {
+                if (currentUmbrella != null)
+                {
+                    currentUmbrella.Unhighlight(); // Unhighlight the previous umbrella
+                }
+                // set the canInteract flag to true
+                // and assign the currentUmbrella variable to the UmbrellaCollect component of the hit object
+                canInteract = true;
+                currentUmbrella = hitInfo.collider.GetComponent<UmbrellaCollect>();
+                currentUmbrella.Highlight(); // Highlight the umbrella when in range
+            }
+
         }
         else if (currentCoin != null)
         {
@@ -112,6 +126,11 @@ public class PlayerBehaviour : MonoBehaviour
         {
             currentCardboard.Unhighlight(); // Unhighlight the collectable if not in range
             currentCardboard = null; // Reset currentCardboard if raycast does not hit a collectable
+        }
+        else if (currentUmbrella != null)
+        {
+            currentUmbrella.Unhighlight(); // Unhighlight the umbrella if not in range
+            currentUmbrella = null; // Reset currentUmbrella if raycast does not hit a collectable
         }
 
         if (canInteract && Input.GetKeyDown(KeyCode.E))
@@ -133,6 +152,13 @@ public class PlayerBehaviour : MonoBehaviour
                 Debug.Log("Interacting with cardboard");
                 currentCardboard.Collect(this);
                 currentCardboard = null;
+                canInteract = false;
+            }
+            else if (currentUmbrella != null)
+            {
+                Debug.Log("Interacting with umbrella");
+                currentUmbrella.Collect(this);
+                currentUmbrella = null;
                 canInteract = false;
             }
         }
@@ -158,6 +184,12 @@ public class PlayerBehaviour : MonoBehaviour
             canInteract = true;
             Debug.Log("Player can collect: " + other.gameObject.name);
         }
+        else if (other.CompareTag("Umbrella"))
+        {
+            currentUmbrella = other.GetComponent<UmbrellaCollect>();
+            canInteract = true;
+            Debug.Log("Player can collect: " + other.gameObject.name);
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -175,6 +207,11 @@ public class PlayerBehaviour : MonoBehaviour
         else if (other.CompareTag("Cardboard"))
         {
             currentCardboard = null;
+            canInteract = false;
+        }
+        else if (other.CompareTag("Umbrella"))
+        {
+            currentUmbrella = null;
             canInteract = false;
         }
     }

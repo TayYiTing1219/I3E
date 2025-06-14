@@ -14,7 +14,7 @@ public class CardboardCollectable : MonoBehaviour
 
     [Header("Sound Effects")]
     [SerializeField] private AudioClip collectSound;
-    [SerializeField] private float soundVolume = 10f;
+    [SerializeField] private float soundVolume = 50f;
 
     void Start()
     {
