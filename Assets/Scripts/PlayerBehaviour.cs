@@ -1,174 +1,143 @@
 using UnityEngine;
-using System.Collections; // Required for IEnumerator
 using UnityEngine.SocialPlatforms.Impl;
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    public static PlayerBehaviour Instance { get; private set; }
-
     int health = 100;
     int max_health = 100;
-    int score = 0;
-    bool canInteract = false;
-    DoorBehaviour currentDoor;
-    CoinBehaviour currentCoin;
-    ButtonController currentButton;
+    int score = 0; // Player's score
 
-    [SerializeField] GameObject projectile;
-    [SerializeField] Transform spawnPoint;
-    [SerializeField] float fireStrength = 0f;
-    [SerializeField] float interactionDistance = 5f;
+    bool canInteract = false; // Flag to check if the player can interact with an object
+    DoorBehaviour currentDoor; // Declare a variable to hold the current door object
+    CoinBehaviour currentCoin; // Declare a variable to hold the current coin object
 
-    [Header("Respawn Settings")]
-    [SerializeField] private Transform respawnPoint; // Assign in inspector
-    [SerializeField] private float respawnDelay = 2f;
-    private bool isRespawning = false;
 
-    private IEnumerator Respawn()
-    {
-        if (isRespawning || respawnPoint == null) yield break;
-        
-        isRespawning = true;
-        Debug.Log("Respawning...");
-        
-        // Optionally, disable player controls here
+    [SerializeField]
+    GameObject projectile;
 
-        yield return new WaitForSeconds(respawnDelay);
+    [SerializeField]
+    Transform spawnPoint;
 
-        // Move player to respawn point and restore health
-        transform.position = respawnPoint.position;
-        health = max_health;
-        Debug.Log("Player respawned!");
+    [SerializeField]
+    float fireStrength = 0f; // Strength of the fire force applied to the projectile
 
-        // Optionally, re-enable player controls here
+    [SerializeField]
+    float interactionDistance = 5f; // Distance within which the player can interact with objects
 
-        isRespawning = false;
-    }
 
     public void ModifyHealth(int amount)
     {
-        health = Mathf.Clamp(health + amount, 0, max_health);
-        Debug.Log($"Health: {health}/{max_health}");
-        
-        if (health <= 0)
+        if (health < max_health)
         {
-            StartCoroutine(Respawn());
+            health += amount;
+            if (health > max_health)
+            {
+                health = max_health; // Ensure health does not exceed max_health
+            }
         }
     }
 
-    public void ModifyScore(int amount) => score += amount;
-
-    void Awake()
+    public void ModifyScore(int amount)
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        score += amount; // Modify the score by the specified amount
+        Debug.Log("Score: " + score); // Log the current score
     }
 
     void OnFire()
     {
+        // instantiate a new projectile at the spawn point's position and rotation
+        // store the spawned porojectile to the 'newProjectile' variable
         GameObject newProjectile = Instantiate(projectile, spawnPoint.position, spawnPoint.rotation);
-        newProjectile.GetComponent<Rigidbody>().AddForce(spawnPoint.forward * fireStrength);
+
+        // create a new vector3 variable 'Fireforce'
+        // set it to the forward direction of the spawn point multiplied by the fire strength
+        // this will determine the direction and speed of the projectile
+        Vector3 fireForce = spawnPoint.forward * fireStrength;
+
+        // get the Rigidbody component of the new projectile
+        // add a force to the projectile defined by the fireForce variable
+        newProjectile.GetComponent<Rigidbody>().AddForce(fireForce);
     }
 
-    void OnInteract()
-    {
-        if (!canInteract) return;
-
-        if (currentCoin != null)
-        {
-            currentCoin.Collect(this);
-            currentCoin = null;
-        }
-        else if (currentButton != null)
-        {
-            currentButton.ToggleFlame();
-        }
-        else if (currentDoor != null)
-        {
-            currentDoor.Interact();
-        }
-    }
 
     void Update()
     {
-        HandleInteractions();
-    }
-
-    void HandleInteractions()
-    {
         RaycastHit hitInfo;
+
         if (Physics.Raycast(spawnPoint.position, spawnPoint.forward, out hitInfo, interactionDistance))
         {
+            Debug.Log("Raycast hit: " + hitInfo.collider.gameObject.name);
             canInteract = false;
-            
-            // Reset previous interactions
-            if (currentCoin != null) currentCoin.Unhighlight();
-            if (currentButton != null) currentButton.Unhighlight();
-
-            // Check for interactables
-            if (hitInfo.collider.CompareTag("Collectable"))
+            if (hitInfo.collider.CompareTag("Door"))
             {
+                currentDoor = hitInfo.collider.GetComponent<DoorBehaviour>();
+                canInteract = true;
+                Debug.Log("Door detected");
+            }
+
+            else if (hitInfo.collider.gameObject.CompareTag("Collectable"))
+            {
+                if (currentCoin != null)
+                {
+                    currentCoin.Unhighlight(); // Unhighlight the previous coin
+                }
+                // set the canInteract flag to true
+                // and assign the currentCoin variable to the CoinBehaviour component of the hit object
+                canInteract = true;
                 currentCoin = hitInfo.collider.GetComponent<CoinBehaviour>();
-                currentCoin.Highlight();
-                canInteract = true;
-            }
-            else if (hitInfo.collider.CompareTag("Button"))
-            {
-                currentButton = hitInfo.collider.GetComponent<ButtonController>();
-                currentButton.Highlight();
-                canInteract = true;
+                currentCoin.Highlight(); // Highlight the coin when in range
             }
         }
-        else
+        else if (currentCoin != null)
         {
-            ClearInteractions();
+            currentCoin.Unhighlight(); // Unhighlight the coin if not in range
+            currentCoin = null; // Reset currentCoin if raycast does not hit a collectable
         }
 
-        if (canInteract)
+        if (canInteract && Input.GetKeyDown(KeyCode.E))
         {
-            if (currentCoin != null)
+            if (currentDoor != null)
             {
+                Debug.Log("Interacting with door");
+                currentDoor.Interact();
+            }
+            else if (currentCoin != null)
+            {
+                Debug.Log("Interacting with coin");
                 currentCoin.Collect(this);
                 currentCoin = null;
-            }
-            else if (currentButton != null)
-            {
-                currentButton.ToggleFlame();
+                canInteract = false;
             }
         }
     }
 
-    void ClearInteractions()
-    {
-        if (currentCoin != null) currentCoin.Unhighlight();
-        if (currentButton != null) currentButton.Unhighlight();
-        
-        currentCoin = null;
-        currentButton = null;
-    }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Door")) currentDoor = other.GetComponent<DoorBehaviour>();
-        else if (other.CompareTag("Collectable")) currentCoin = other.GetComponent<CoinBehaviour>();
-        else if (other.CompareTag("Button")) currentButton = other.GetComponent<ButtonController>();
-        
-        canInteract = true;
+        if (other.CompareTag("Door"))
+        {
+            currentDoor = other.GetComponent<DoorBehaviour>();
+            canInteract = true;
+        }
+        else if (other.CompareTag("Collectable"))
+        {
+            currentCoin = other.GetComponent<CoinBehaviour>();
+            canInteract = true;
+            Debug.Log("Player can collect: " + other.gameObject.name);
+        }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Door")) currentDoor = null;
-        else if (other.CompareTag("Collectable")) currentCoin = null;
-        else if (other.CompareTag("Button")) currentButton = null;
-        
-        canInteract = false;
+        if (other.CompareTag("Door"))
+        {
+            currentDoor = null;
+            canInteract = false;
+        }
+        else if (other.CompareTag("Collectable"))
+        {
+            currentCoin = null;
+            canInteract = false;
+        }
     }
 }
