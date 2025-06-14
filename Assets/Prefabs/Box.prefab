@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4858199302784770471}
   - component: {fileID: 7246078285813749101}
   - component: {fileID: 2960863100342568518}
+  - component: {fileID: -5066617690449386735}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -108,3 +109,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.74355185, y: 0.74014306, z: 0.7436507}
   m_Center: {x: 0, y: 0.00001642108, z: -0.0000001937151}
+--- !u!114 &-5066617690449386735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9191778392552649912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e54d95a8a626fa42bb192caead8a3f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinPrefab: {fileID: 6855149616146424382, guid: 1269383de2ad34b489662104b6033ca8, type: 3}
+  numberOfCoins: 1
+  coinRotation: {x: 90, y: 0, z: 0}
