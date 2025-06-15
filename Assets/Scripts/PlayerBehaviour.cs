@@ -25,18 +25,46 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField]
     float interactionDistance = 5f; // Distance within which the player can interact with objects
+    
+    private Vector3 startPosition; // Store the starting position
 
+    void Start()
+    {
+        startPosition = transform.position; // Initialize the starting position
+    }
 
     public void ModifyHealth(int amount)
     {
-        if (health < max_health)
+        health += amount;
+        
+        // Check if health dropped below zero
+        if (health <= 0)
         {
-            health += amount;
-            if (health > max_health)
-            {
-                health = max_health; // Ensure health does not exceed max_health
-            }
+            health = 0;
+            Respawn();
         }
+        else if (health > max_health)
+        {
+            health = max_health;
+        }
+    }
+    void Respawn()
+    {
+        // Reset position to start
+        transform.position = startPosition;
+        
+        // Reset health
+        health = max_health;
+        
+        // Optional: Reset velocity if player has a Rigidbody
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+        
+        Debug.Log("Player respawned!");
     }
 
     public void ModifyScore(int amount)

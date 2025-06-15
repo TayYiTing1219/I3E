@@ -12,7 +12,7 @@ public class Hazard : MonoBehaviour
             PlayerBehaviour player = other.GetComponent<PlayerBehaviour>();
             if (player != null)
             {
-                // Apply damage
+                // Apply damage - this will now trigger respawn if health reaches 0
                 player.ModifyHealth(-damageAmount);
                 
                 // Push player away
