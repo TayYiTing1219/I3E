@@ -251,6 +251,11 @@ public class PlayerBehaviour : MonoBehaviour
             Debug.Log("Player collided with hazard!");
             // Damage is handled by the Hazard script
         }
+        else if (collision.gameObject.CompareTag("Flame"))
+        {
+            Debug.Log("Player collided with flame!");
+            // Damage is handled by the Flame script
+        }
         else if (collision.gameObject.CompareTag("Respawn"))
         {
             RemoveHazardScript(collision.gameObject);
