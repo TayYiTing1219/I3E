@@ -45,4 +45,9 @@ public class Flame : MonoBehaviour
             ApplyDamage(other.gameObject);
         }
     }
+    public void DestroyFlame()
+    {
+        Debug.Log("Flame destruction called on: " + gameObject.name);
+        Destroy(gameObject);
+    }
 }

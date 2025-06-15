@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class PlayerBehaviour : MonoBehaviour
     CoinBehaviour currentCoin; // Declare a variable to hold the current coin object
     CardboardCollectable currentCardboard; // Declare a variable to hold the current collectable object
     UmbrellaCollect currentUmbrella; // Declare a variable to hold the current umbrella object
+    ButtonController currentButton; // Declare a variable to hold the current button object
 
 
     [SerializeField]
@@ -186,6 +188,20 @@ public class PlayerBehaviour : MonoBehaviour
                 currentUmbrella.Highlight(); // Highlight the umbrella when in range
             }
 
+            else if (hitInfo.collider.gameObject.CompareTag("Button"))
+            {
+                if (currentButton != null)
+                {
+                    currentButton.Unhighlight(); // Unhighlight the previous button
+                }
+                // set the canInteract flag to true
+                // and assign the currentButton variable to the ButtonController component of the hit object
+                canInteract = true;
+                currentButton = hitInfo.collider.GetComponent<ButtonController>();
+                currentButton.Highlight(); // Highlight the button when in range
+            }
+
+
         }
         else if (currentCoin != null)
         {
@@ -202,37 +218,49 @@ public class PlayerBehaviour : MonoBehaviour
             currentUmbrella.Unhighlight(); // Unhighlight the umbrella if not in range
             currentUmbrella = null; // Reset currentUmbrella if raycast does not hit a collectable
         }
+        else if (currentButton != null)
+        {
+            currentButton.Unhighlight(); // Unhighlight the button if not in range
+            currentButton = null; // Reset currentButton if raycast does not hit a button
+        }
 
 
         if (canInteract && Input.GetKeyDown(KeyCode.E))
+        {
+            if (currentDoor != null)
             {
-                if (currentDoor != null)
-                {
-                    Debug.Log("Interacting with door");
-                    currentDoor.Interact();
-                }
-                else if (currentCoin != null)
-                {
-                    Debug.Log("Interacting with coin");
-                    currentCoin.Collect(this);
-                    currentCoin = null;
-                    canInteract = false;
-                }
-                else if (currentCardboard != null)
-                {
-                    Debug.Log("Interacting with cardboard");
-                    currentCardboard.Collect(this);
-                    currentCardboard = null;
-                    canInteract = false;
-                }
-                else if (currentUmbrella != null)
-                {
-                    Debug.Log("Interacting with umbrella");
-                    currentUmbrella.Collect(this);
-                    currentUmbrella = null;
-                    canInteract = false;
-                }
+                Debug.Log("Interacting with door");
+                currentDoor.Interact();
             }
+            else if (currentCoin != null)
+            {
+                Debug.Log("Interacting with coin");
+                currentCoin.Collect(this);
+                currentCoin = null;
+                canInteract = false;
+            }
+            else if (currentCardboard != null)
+            {
+                Debug.Log("Interacting with cardboard");
+                currentCardboard.Collect(this);
+                currentCardboard = null;
+                canInteract = false;
+            }
+            else if (currentUmbrella != null)
+            {
+                Debug.Log("Interacting with umbrella");
+                currentUmbrella.Collect(this);
+                currentUmbrella = null;
+                canInteract = false;
+            }
+            else if (currentButton != null)
+            {
+                Debug.Log("Interacting with button");
+                currentButton.Interact();
+                currentButton = null;
+                canInteract = false;
+            }
+        }
     }
 
     private void RemoveHazardScript(GameObject respawnObject)
@@ -286,6 +314,22 @@ public class PlayerBehaviour : MonoBehaviour
             canInteract = true;
             Debug.Log("Player can collect: " + other.gameObject.name);
         }
+        else if (other.CompareTag("Button"))
+        {
+            currentButton = other.GetComponent<ButtonController>();
+            canInteract = true;
+            Debug.Log("Player can interact with button: " + other.gameObject.name);
+        }
+        else if (other.CompareTag("Hazard"))
+        {
+            Debug.Log("Player triggered hazard!");
+            // Damage is handled by the Hazard script
+        }
+        else if (other.CompareTag("Flame"))
+        {
+            Debug.Log("Player triggered flame!");
+            // Damage is handled by the Flame script
+        }
         else if (other.CompareTag("Respawn"))
         {
             RemoveHazardScript(other.gameObject);
@@ -312,6 +356,11 @@ public class PlayerBehaviour : MonoBehaviour
         else if (other.CompareTag("Umbrella"))
         {
             currentUmbrella = null;
+            canInteract = false;
+        }
+        else if (other.CompareTag("Button"))
+        {
+            currentButton = null;
             canInteract = false;
         }
     }
