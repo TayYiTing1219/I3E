@@ -1,3 +1,9 @@
+/*
+* Author: Tay Yi Ting
+* Date: 2025-06-15
+* Description: Controls the sound effect in the game.
+*/
+
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]

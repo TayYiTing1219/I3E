@@ -1,3 +1,9 @@
+/*
+* Author: Tay Yi Ting
+* Date: 2025-06-15
+* Description: Allows player to attack it by pressing 'F' to drop coins to collect.
+*/
+
 using UnityEngine;
 
 public class GiftBox : MonoBehaviour

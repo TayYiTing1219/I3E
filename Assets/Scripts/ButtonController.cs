@@ -1,3 +1,9 @@
+/*
+* Author: Tay Yi Ting
+* Date: 2025-06-15
+* Description: Controls the button interactions and visual feedback.
+*/
+
 using UnityEngine;
 
 public class ButtonController : MonoBehaviour

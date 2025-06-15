@@ -1,3 +1,9 @@
+/*
+* Author: Tay Yi Ting
+* Date: 2025-06-15
+* Description: Allows player to interact with doors and play sound effects when opening/closing.
+*/
+
 using UnityEngine;
 
 public class DoorBehaviour : MonoBehaviour

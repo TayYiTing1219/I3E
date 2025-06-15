@@ -1,3 +1,9 @@
+/*
+* Author: Tay Yi Ting
+* Date: 2025-06-15
+* Description: Manages the game's state, including collectable tracking.
+*/
+
 using UnityEngine;
 using TMPro; // Required for TextMeshPro
 

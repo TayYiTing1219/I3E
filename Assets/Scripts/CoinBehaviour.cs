@@ -1,3 +1,9 @@
+/*
+* Author: Tay Yi Ting
+* Date: 2025-06-15
+* Description: Allows player to collect coins and play sound effects when collecting. it would increase the player's track collectables.
+*/
+
 using UnityEngine;
 
 

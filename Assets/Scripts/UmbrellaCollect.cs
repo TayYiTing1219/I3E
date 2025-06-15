@@ -1,3 +1,9 @@
+/*
+* Author: Tay Yi Ting
+* Date: 2025-06-15
+* Description: Allows player to collect umbrella and play sound effects when collecting.
+*/
+
 using UnityEngine;
 
 [RequireComponent(typeof(Collider), typeof(MeshRenderer))]

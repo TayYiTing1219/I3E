@@ -1,3 +1,9 @@
+/*
+* Author: Tay Yi Ting
+* Date: 2025-06-15
+* Description: Player behaviour script that handles health, score, interactions with doors, collectables, and projectiles.
+*/
+
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using System.Collections;

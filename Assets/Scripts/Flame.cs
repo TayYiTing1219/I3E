@@ -1,3 +1,9 @@
+/*
+* Author: Tay Yi Ting
+* Date: 2025-06-15
+* Description: flame hazard that applies damage and push effect to the player on collision.
+*/
+
 using UnityEngine;
 
 public class Flame : MonoBehaviour
