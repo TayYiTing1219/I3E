@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 [RequireComponent(typeof(Collider), typeof(MeshRenderer))]
 public class UmbrellaCollect : MonoBehaviour
 {
@@ -62,9 +61,19 @@ public class UmbrellaCollect : MonoBehaviour
         meshRenderer.enabled = false;
         Destroy(gameObject, collectSound != null ? collectSound.length : 0.1f); // Small delay for effects to play
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (isCollected) return;
+
+        if (other.CompareTag("Player"))
+        {
+            PlayerBehaviour player = other.GetComponent<PlayerBehaviour>();
+            if (player != null)
+            {
+                Collect(player);
+            }
+        }
     }
 
 }

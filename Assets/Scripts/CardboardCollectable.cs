@@ -14,7 +14,7 @@ public class CardboardCollectable : MonoBehaviour
 
     [Header("Sound Effects")]
     [SerializeField] private AudioClip collectSound;
-    [SerializeField] private float soundVolume = 50f;
+    [SerializeField] private float soundVolume = 150f;
 
     void Start()
     {
@@ -62,6 +62,15 @@ public class CardboardCollectable : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (isCollected) return;
+
+        if (other.CompareTag("Player"))
+        {
+            PlayerBehaviour player = other.GetComponent<PlayerBehaviour>();
+            if (player != null)
+            {
+                Collect(player);
+            }
+        }
     }
 
 }

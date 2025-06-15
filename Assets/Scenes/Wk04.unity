@@ -39774,6 +39774,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 889aff3f10557db47a90df6a8b87fc89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentCardboard: {fileID: 0}
+  currentUmbrella: {fileID: 0}
   projectile: {fileID: 5864887334107156819, guid: 5de42daebba5dc3429541aad839fd9da, type: 3}
   spawnPoint: {fileID: 1342689946}
   fireStrength: 2000
@@ -45532,6 +45534,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 889aff3f10557db47a90df6a8b87fc89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentCardboard: {fileID: 0}
+  currentUmbrella: {fileID: 0}
   projectile: {fileID: 5864887334107156819, guid: 5de42daebba5dc3429541aad839fd9da, type: 3}
   spawnPoint: {fileID: 238391211}
   fireStrength: 2000
