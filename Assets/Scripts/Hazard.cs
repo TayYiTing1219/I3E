@@ -5,20 +5,44 @@ public class Hazard : MonoBehaviour
     [SerializeField] private int damageAmount = 100;
     [SerializeField] private float pushForce = 10f;
 
-    private void OnTriggerEnter(Collider other)
+    public int GetDamageAmount()
+    {
+        return damageAmount;
+    }
+
+    private void ApplyDamage(GameObject playerObject)
+    {
+        PlayerBehaviour player = playerObject.GetComponent<PlayerBehaviour>();
+        if (player != null)
+        {
+            Debug.Log($"Applying {damageAmount} damage to player");
+            player.ModifyHealth(-damageAmount);
+
+            // Push effect
+            Rigidbody rb = playerObject.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                Vector3 pushDirection = (playerObject.transform.position - transform.position).normalized;
+                rb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
+            }
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("Hazard collided with player!");
+            ApplyDamage(collision.gameObject);
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            PlayerBehaviour player = other.GetComponent<PlayerBehaviour>();
-            if (player != null)
-            {
-                // Apply damage - this will now trigger respawn if health reaches 0
-                player.ModifyHealth(-damageAmount);
-                
-                // Push player away
-                Vector3 pushDirection = (other.transform.position - transform.position).normalized;
-                other.GetComponent<Rigidbody>().AddForce(pushDirection * pushForce, ForceMode.Impulse);
-            }
+            Debug.Log("Hazard triggered by player!");
+            ApplyDamage(other.gameObject);
         }
     }
 }

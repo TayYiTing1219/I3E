@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
+using System.Collections;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -26,16 +27,37 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     float interactionDistance = 5f; // Distance within which the player can interact with objects
     
-    private Vector3 startPosition; // Store the starting position
+    [SerializeField] private Transform respawnPoint; // Add this serialized field
+    private static Vector3 savedStartPosition;
+    private static Quaternion savedStartRotation;
+    private static bool positionSaved = false;
 
     void Start()
     {
-        startPosition = transform.position; // Initialize the starting position
+        // Only store position if not already stored
+        if (!positionSaved)
+        {
+            StoreStartPositionAndRotation();
+            positionSaved = true;
+        }
     }
-
+    public void StoreStartPositionAndRotation()
+    {
+        if (respawnPoint != null)
+        {
+            savedStartPosition = respawnPoint.position;
+            savedStartRotation = respawnPoint.rotation;
+        }
+        else
+        {
+            savedStartPosition = transform.position;
+            savedStartRotation = transform.rotation;
+        }
+        Debug.Log($"Start position permanently stored: {savedStartPosition}");
+    }
     public void ModifyHealth(int amount)
     {
-        health += amount;
+        health += amount; // Always modify health, regardless of current value
         
         // Check if health dropped below zero
         if (health <= 0)
@@ -47,25 +69,45 @@ public class PlayerBehaviour : MonoBehaviour
         {
             health = max_health;
         }
+        
+        Debug.Log("Health: " + health); // debugging
     }
+    
     void Respawn()
     {
-        // Reset position to start
-        transform.position = startPosition;
-        
-        // Reset health
-        health = max_health;
-        
-        // Optional: Reset velocity if player has a Rigidbody
+        StartCoroutine(SmoothRespawn());
+    }
+
+    IEnumerator SmoothRespawn()
+    {
+        // Disable physics temporarily
         Rigidbody rb = GetComponent<Rigidbody>();
+        Collider col = GetComponent<Collider>();
         if (rb != null)
         {
+            rb.isKinematic = true;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
-        
-        Debug.Log("Player respawned!");
+        if (col != null) col.enabled = false;
+
+        yield return new WaitForFixedUpdate();
+
+        // Use the permanently saved position
+        transform.position = savedStartPosition;
+        transform.rotation = savedStartRotation;
+
+        yield return new WaitForFixedUpdate();
+
+        // Re-enable physics
+        if (rb != null) rb.isKinematic = false;
+        if (col != null) col.enabled = true;
+
+        // Reset health
+        health = max_health;
+        Debug.Log($"Respawned to permanent position: {savedStartPosition}");
     }
+
 
     public void ModifyScore(int amount)
     {
@@ -161,38 +203,59 @@ public class PlayerBehaviour : MonoBehaviour
             currentUmbrella = null; // Reset currentUmbrella if raycast does not hit a collectable
         }
 
+
         if (canInteract && Input.GetKeyDown(KeyCode.E))
-        {
-            if (currentDoor != null)
             {
-                Debug.Log("Interacting with door");
-                currentDoor.Interact();
+                if (currentDoor != null)
+                {
+                    Debug.Log("Interacting with door");
+                    currentDoor.Interact();
+                }
+                else if (currentCoin != null)
+                {
+                    Debug.Log("Interacting with coin");
+                    currentCoin.Collect(this);
+                    currentCoin = null;
+                    canInteract = false;
+                }
+                else if (currentCardboard != null)
+                {
+                    Debug.Log("Interacting with cardboard");
+                    currentCardboard.Collect(this);
+                    currentCardboard = null;
+                    canInteract = false;
+                }
+                else if (currentUmbrella != null)
+                {
+                    Debug.Log("Interacting with umbrella");
+                    currentUmbrella.Collect(this);
+                    currentUmbrella = null;
+                    canInteract = false;
+                }
             }
-            else if (currentCoin != null)
-            {
-                Debug.Log("Interacting with coin");
-                currentCoin.Collect(this);
-                currentCoin = null;
-                canInteract = false;
-            }
-            else if (currentCardboard != null)
-            {
-                Debug.Log("Interacting with cardboard");
-                currentCardboard.Collect(this);
-                currentCardboard = null;
-                canInteract = false;
-            }
-            else if (currentUmbrella != null)
-            {
-                Debug.Log("Interacting with umbrella");
-                currentUmbrella.Collect(this);
-                currentUmbrella = null;
-                canInteract = false;
-            }
-        }
     }
 
-
+    private void RemoveHazardScript(GameObject respawnObject)
+    {
+        Hazard hazard = respawnObject.GetComponent<Hazard>();
+        if (hazard != null)
+        {
+            Destroy(hazard);
+            Debug.Log($"Removed Hazard script from {respawnObject.name}");
+        }
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Hazard"))
+        {
+            Debug.Log("Player collided with hazard!");
+            // Damage is handled by the Hazard script
+        }
+        else if (collision.gameObject.CompareTag("Respawn"))
+        {
+            RemoveHazardScript(collision.gameObject);
+        }
+    }
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Door"))
@@ -217,6 +280,10 @@ public class PlayerBehaviour : MonoBehaviour
             currentUmbrella = other.GetComponent<UmbrellaCollect>();
             canInteract = true;
             Debug.Log("Player can collect: " + other.gameObject.name);
+        }
+        else if (other.CompareTag("Respawn"))
+        {
+            RemoveHazardScript(other.gameObject);
         }
     }
 
