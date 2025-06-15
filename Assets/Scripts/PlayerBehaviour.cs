@@ -132,7 +132,17 @@ public class PlayerBehaviour : MonoBehaviour
         // add a force to the projectile defined by the fireForce variable
         newProjectile.GetComponent<Rigidbody>().AddForce(fireForce);
     }
-
+    public void OnUmbrellaCollected()
+    {
+        // Find all objects with Hazard component
+        Hazard[] hazards = FindObjectsByType<Hazard>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        foreach (Hazard hazard in hazards)
+        {
+            // Remove the Hazard component
+            Destroy(hazard);
+            Debug.Log($"Removed Hazard script from {hazard.gameObject.name}");
+        }
+    }
 
     void Update()
     {
@@ -265,11 +275,19 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void RemoveHazardScript(GameObject respawnObject)
     {
+        if (respawnObject == null) return;
         Hazard hazard = respawnObject.GetComponent<Hazard>();
         if (hazard != null)
         {
             Destroy(hazard);
             Debug.Log($"Removed Hazard script from {respawnObject.name}");
+        }
+        // check in children
+        Hazard[] childHazards = respawnObject.GetComponentsInChildren<Hazard>();
+        foreach (Hazard childHazard in childHazards)
+        {
+            Destroy(childHazard);
+            Debug.Log($"Removed Hazard script from child object {childHazard.gameObject.name}");
         }
     }
     void OnCollisionEnter(Collision collision)

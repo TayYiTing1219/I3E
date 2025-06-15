@@ -55,6 +55,9 @@ public class UmbrellaCollect : MonoBehaviour
             Debug.LogWarning("Collect sound not assigned!");
         }
 
+        // Notify the player that an umbrella was collected
+        player.OnUmbrellaCollected();
+
         // Disable before destruction to prevent double-collection
         meshRenderer.enabled = false;
         Destroy(gameObject, collectSound != null ? collectSound.length : 0.1f); // Small delay for effects to play
